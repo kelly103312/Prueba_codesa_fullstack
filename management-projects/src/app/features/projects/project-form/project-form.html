@@ -1,0 +1,71 @@
+<p-toast />
+
+<div class="flex justify-content-center p-4">
+  <div class="w-full h-full">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <p-card header="{{ isEditMode ? 'Editar Proyecto' : 'Crear Proyecto' }}">
+        <div class="p-fluid flex flex-column gap-3">
+          <div class="p-field flex flex-column">
+            <label for="name" class="mb-2">Nombre</label>
+            <input pInputText id="name" formControlName="name" placeholder="Nombre del proyecto" />
+            @if (form.get('name')?.invalid && (form.get('name')?.touched || form.get('name')?.dirty)) {
+              <small class="p-error mt-2">El nombre es requerido.</small>
+            }
+          </div>
+
+          <div class="p-field flex flex-column">
+            <label for="description" class="mb-2">Descripción</label>
+            <textarea rows="5" cols="30" pTextarea id="description" formControlName="description"></textarea>
+            @if (form.get('description')?.invalid && (form.get('description')?.touched || form.get('description')?.dirty)) {
+                <small severity="error" size="small" variant="simple">description is required..</small>
+            }
+          </div>
+
+          
+          <div class="flex gap-3">
+            <div class="flex-1" [hidden]="!isEditMode">
+              <div class="p-field flex flex-column">
+                <label for="status" class="mb-2">Estado</label>
+                <p-select [options]="statusOptions" id="status" formControlName="status" [checkmark]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Selecciona un estado" class="w-full" />
+                @if (form.get('status')?.invalid && (form.get('status')?.touched || form.get('status')?.dirty)) {
+                  <small class="p-error mt-2">El estado es requerido.</small>
+                }
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="p-field flex flex-column">
+                <label for="startAt" class="mb-2">Fecha de inicio</label>
+                <p-datepicker id="startAt" formControlName="startAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
+                @if (form.get('startAt')?.invalid && (form.get('startAt')?.touched || form.get('startAt')?.dirty)) {
+                  <small class="p-error mt-2">La fecha de inicio es requerida.</small>
+                }
+              </div>
+            </div>
+            <div class="flex-1">
+              <div class="p-field flex flex-column">
+                <label for="finishAt" class="mb-2">Fecha de fin</label>
+                <p-datepicker id="finishAt" formControlName="finishAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
+                @if (form.get('finishAt')?.invalid && (form.get('finishAt')?.touched || form.get('finishAt')?.dirty)) {
+                  <small class="p-error mt-2">La fecha de fin es requerida.</small>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="p-field flex flex-column">
+            <label for="assignedId" class="mb-2">Asignado a</label>
+            <p-select id="assignedId" formControlName="assignedId" [options]="users()" optionLabel="name" optionValue="id" [checkmark]="true" [showClear]="true" placeholder="Selecciona un responsable" class="w-full" />
+            @if (form.get('assignedId')?.invalid && (form.get('assignedId')?.touched || form.get('assignedId')?.dirty)) {
+              <small class="p-error mt-2">El responsable es requerido.</small>
+            }
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+          <button pButton type="submit" severity="success" [loading]="loading" [disabled]="loading" label="Guardar" class="w-full"></button>
+          <button pButton type="button" severity="secondary" (click)="cancel()" label="Cancelar" class="w-full"></button>
+        </div>
+      </p-card>
+    </form>
+  </div>
+</div>

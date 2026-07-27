@@ -1,0 +1,39 @@
+<p-toast />
+
+<div class="flex justify-content-center align-items-center min-h-screen">
+  <div class="w-full md:w-30rem">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <p-card header="Iniciar sesión">
+        <p>Ingresa tus credenciales para continuar</p>
+
+        <div class="p-fluid flex flex-column gap-3">
+          <div class="p-field flex flex-column">
+            <label for="email" class="mb-2">Correo electrónico</label>
+            <input pInputText id="email" type="email" formControlName="email" placeholder="tu@correo.com" />
+            @if (loginForm.get('email')?.invalid && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)) {
+              <small class="p-error mt-2">Ingresa un correo válido.</small>
+            }
+          </div>
+
+          <div class="p-field flex flex-column">
+            <label for="password" class="mb-2">Contraseña</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              placeholder="********"
+            />
+            @if (loginForm.get('password')?.invalid && (loginForm.get('password')?.touched || loginForm.get('password')?.dirty)) {
+              <small class="p-error mt-2">La contraseña debe tener al menos 6 caracteres.</small>
+            }
+          </div>
+        </div>
+
+        <button pButton class="w-full mt-4" type="submit" [loading]="loading" [disabled]="loading" label="Ingresar"></button>
+      </p-card>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+.env
+
+# Java / Maven (user-service)
+backend/demo/target/
+backend/demo/.mvn/wrapper/maven-wrapper.jar
+backend/demo/HELP.md
+backend/project-service/target/
+backend/project-service/.mvn/wrapper/maven-wrapper.jar
+backend/project-service/HELP.md
+*.class
+*.jar
+*.war
+
+# Node / Angular (management-projects)
+management-projects/node_modules/
+management-projects/dist/
+management-projects/.angular/
+management-projects/tmp/
+management-projects/out-tsc/
+management-projects/bazel-out/
+
+# IDEs
+.vscode/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+#Env
+.env

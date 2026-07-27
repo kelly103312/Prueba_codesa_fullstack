@@ -1,0 +1,116 @@
+<p-toast />
+<p-confirmdialog acceptButtonStyleClass="p-button-success" rejectButtonStyleClass="p-button-secondary" />
+
+<div class="flex flex-column gap-3 m-4">
+    <h1 class="text-xl font-semibold m-0 mr-3">Project List</h1>
+    <p-table #dt1 [value]="projects()" dataKey="id" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading()" [paginator]="true" [globalFilterFields]="['name', 'description', 'assignedUser', 'ownerUser', 'status']">
+        <ng-template #caption>
+            <div class="flex align-items-center w-full">
+                <div class="flex align-items-center gap-3">
+                    <p-iconfield>
+                        <p-inputicon class="pi pi-search" />
+                        <input type="text" [(ngModel)]="searchValue" pInputText placeholder="Busca palabras clave" (input)="dt1.filterGlobal($event.target.value, 'contains')"/>
+                    </p-iconfield>
+                    <button pButton variant="outlined" icon="pi pi-filter-slash" (click)="clear(dt1)"> </button>
+                    <button pButton variant="outlined" icon="pi pi-plus" (click)="add()"> </button>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th>
+                    <div class="flex items-center align-items-center">
+                        Name
+                        <p-column-filter type="text" field="name" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center align-items-center">
+                        Description
+                        <p-column-filter type="text" field="description" display="menu" />
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center align-items-center">
+                        Status
+                        <p-column-filter field="status" matchMode="equals" display="menu">
+                            <ng-template #filter let-value let-filter="filterCallback">
+                                <p-select [ngModel]="value" [options]="statuses()" optionLabel="label" optionValue="value" (onChange)="filter($event.value)" placeholder="Select One" class="w-full">
+                                    <ng-template let-option #item>
+                                        <p-tag [value]="option.label" [severity]="getSeverity(option.value)" />
+                                    </ng-template>
+                                </p-select>
+                            </ng-template>
+                        </p-column-filter>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center align-items-center">
+                        Assigned User
+                        <p-column-filter type="text" field="assignedUser" display="menu" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex items-center align-items-center">
+                        Owner User
+                        <p-column-filter type="text" field="ownerUser" display="menu" />
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center align-items-center">
+                        Start Date
+                        <p-column-filter type="date" field="startDate" display="menu" />
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center align-items-center">
+                        Finish Date
+                        <p-column-filter type="date" field="finishDate" display="menu" />
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex items-center align-items-center">
+                        Actions
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-project>
+            <tr>
+                <td>
+                    <span class="font-medium">{{ project.name }}</span>
+                </td>
+                <td>
+                    <span class="text-sm">{{ project.description }}</span>
+                </td>
+                <td>
+                    <p-tag [value]="getStatusLabel(project.status)" [severity]="getSeverity(project.status)" />
+                </td>
+                <td>
+                    {{ project.assignedName }}
+                </td>
+                <td>
+                    {{ project.ownerName }}
+                </td>
+                <td>
+                    {{ formatDate(project.startAt) }}
+                </td>
+                <td>
+                    {{ formatDate(project.finishAt) }}
+                </td>
+                <td>
+                    <div class="flex gap-1">
+                        <button pButton icon="pi pi-eye" severity="info" rounded text (click)="viewProject(project)"></button>
+                        <button pButton icon="pi pi-box" severity="warn" rounded text (click)="archiveProject(project.id)"></button>
+                        <button pButton icon="pi pi-trash" severity="danger" rounded text (click)="deleteProject(project.id)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="8">No projects found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

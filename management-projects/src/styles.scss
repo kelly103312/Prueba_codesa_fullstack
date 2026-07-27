@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.css';
+
+:root {
+  --primary-color: #990003;
+  --primary-color-text: #ffffff;
+  --primary-hover-color: #7a0002;
+  --primary-active-color: #5c0001;
+  --surface-ground: #f4f5f7;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: #e2e8f0;
+  --text-color: #1e293b;
+  --text-color-secondary: #64748b;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--surface-ground);
+  color: var(--text-color);
+}

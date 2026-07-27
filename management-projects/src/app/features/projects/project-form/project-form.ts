@@ -1,0 +1,124 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ProjectService } from '../../../core/services/project.service';
+import { UserService } from '../../../core/services/user.service';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { User } from '../../../core/models/auth';
+import { PROJECT_STATUSES } from '../constants/project-constants';
+
+@Component({
+  selector: 'app-project-form',
+  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule],
+  templateUrl: './project-form.html',
+  styleUrl: './project-form.scss',
+  providers: [MessageService],
+})
+export class ProjectForm implements OnInit {
+  private fb = inject(FormBuilder);
+  private projectService = inject(ProjectService);
+  private userService = inject(UserService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private messageService = inject(MessageService);
+
+  isEditMode = false;
+  form: FormGroup;
+  loading = false;
+  users = signal<User[]>([]);
+  private projectId: string | null = null;
+
+  statusOptions = PROJECT_STATUSES;
+
+  constructor() {
+    const today = new Date();
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+      status: ['active', Validators.required],
+      startAt: [today, Validators.required],
+      finishAt: ['', Validators.required],
+      assignedId: ['', Validators.required],
+    });
+  }
+
+  ngOnInit(): void {
+    this.userService.getAll().subscribe((users) => this.users.set(users));
+
+    this.projectId = this.route.snapshot.paramMap.get('id');
+    if (this.projectId && this.projectId !== 'new') {
+      this.isEditMode = true;
+      this.loadProject();
+    }
+  }
+
+  private loadProject(): void {
+    this.loading = true;
+    const id = Number(this.projectId);
+    this.projectService.getById(id).subscribe({
+      next: (res) => {
+        const p = res.data;
+        const matched = this.users().find((u) => u.name === p.assignedName);
+        this.form.patchValue({
+          name: p.name,
+          description: p.description,
+          status: p.status,
+          startAt: new Date(p.startAt),
+          finishAt: new Date(p.finishAt),
+          assignedId: matched ? matched.id : null,
+        });
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el proyecto' });
+      },
+    });
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.loading = true;
+    const formValue = this.form.value;
+    const selectedUser = this.users().find((u) => u.id === formValue.assignedId);
+
+    const payload = {
+      ...formValue,
+      id: this.isEditMode ? Number(this.projectId) : undefined,
+      assignedName: selectedUser?.name ?? '',
+      assignedId: selectedUser?.id ?? '',
+    };
+
+    const request = this.isEditMode
+      ? this.projectService.update(payload)
+      : this.projectService.create(payload);
+
+    request.subscribe({
+      next: () => {
+        const msg = this.isEditMode ? 'Proyecto actualizado exitosamente' : 'Proyecto creado exitosamente';
+        this.messageService.add({ severity: 'success', summary: this.isEditMode ? 'Actualizado' : 'Creado', detail: msg });
+        this.router.navigate(['/projects/home']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message || 'No se pudo guardar el proyecto' });
+      },
+      complete: () => (this.loading = false),
+    });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/projects/home']);
+  }
+}
