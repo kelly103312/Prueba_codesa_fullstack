@@ -5,7 +5,6 @@ import com.codesa.user.service.project.dto.TaskDto;
 import com.codesa.user.service.project.dto.TaskListResponseDto;
 import com.codesa.user.service.project.dto.UpdateTaskRequest;
 import com.codesa.user.service.project.entity.TaskEntity;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -26,6 +25,7 @@ public interface TaskMapper {
     @Mapping(target = "updatedAt", ignore = true)
     TaskDto toDtoFromCreate(CreateTaskRequest request);
 
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     TaskDto toDtoFromUpdate(UpdateTaskRequest request);
@@ -41,6 +41,6 @@ public interface TaskMapper {
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "status", defaultValue = "CREATED")
+    @Mapping(target = "status", ignore = true)
     void updateEntity(TaskDto dto, @MappingTarget TaskEntity entity);
 }
