@@ -50,13 +50,15 @@ export class ProjectForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe((users) => this.users.set(users));
-
     this.projectId = this.route.snapshot.paramMap.get('id');
-    if (this.projectId && this.projectId !== 'new') {
-      this.isEditMode = true;
-      this.loadProject();
-    }
+    this.isEditMode = this.projectId !== null && this.projectId !== 'new';
+
+    this.userService.getAll().subscribe((users) => {
+      this.users.set(users);
+      if (this.isEditMode) {
+        this.loadProject();
+      }
+    });
   }
 
   private loadProject(): void {
@@ -65,7 +67,7 @@ export class ProjectForm implements OnInit {
     this.projectService.getById(id).subscribe({
       next: (res) => {
         const p = res.data;
-        const matched = this.users().find((u) => u.name === p.assignedName);
+        const matched = this.users().find((u) => u.fullName === p.assignedName);
         this.form.patchValue({
           name: p.name,
           description: p.description,
@@ -96,7 +98,7 @@ export class ProjectForm implements OnInit {
     const payload = {
       ...formValue,
       id: this.isEditMode ? Number(this.projectId) : undefined,
-      assignedName: selectedUser?.name ?? '',
+      assignedName: selectedUser?.fullName ?? '',
       assignedId: selectedUser?.id ?? '',
     };
 
