@@ -54,7 +54,7 @@
 
           <div class="p-field flex flex-column">
             <label for="assignedId" class="mb-2">Asignado a</label>
-            <p-select id="assignedId" formControlName="assignedId" [options]="users()" optionLabel="name" optionValue="id" [checkmark]="true" [showClear]="true" placeholder="Selecciona un responsable" class="w-full" />
+            <p-select id="assignedId" formControlName="assignedId" [options]="users()" optionLabel="fullName" optionValue="id" [checkmark]="true" [showClear]="true" placeholder="Selecciona un responsable" class="w-full" />
             @if (form.get('assignedId')?.invalid && (form.get('assignedId')?.touched || form.get('assignedId')?.dirty)) {
               <small class="p-error mt-2">El responsable es requerido.</small>
             }

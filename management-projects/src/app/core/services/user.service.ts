@@ -1,19 +1,20 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { User } from '../models/auth';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  private mockUsers: User[] = [
-    { id: 'dc492856-5710-4a33-a069-e3ae0d1813bc', email: 'admin@codesa.com', name: 'Admin Codesa', roles: ['ADMIN'] },
-    { id: 'dc492856-5710-4a33-a069-e3ae0d1813bd', email: 'carlos@codesa.com', name: 'Carlos Mendoza', roles: ['USER'] }
-  ];
+  private readonly baseUrl = `${environment.apiUrl}/users`;
+
+  constructor(private http: HttpClient) {}
 
   getAll(): Observable<User[]> {
-    return of(this.mockUsers);
+    return this.http.get<User[]>(`${this.baseUrl}/all`);
   }
 
-  getById(id: string): Observable<User | undefined> {
-    return of(this.mockUsers.find((u) => u.id === id));
+  getById(id: string): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/${id}`);
   }
 }

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/users")
@@ -35,4 +37,10 @@ public class UserController {
         UserDto user = userService.getAuthenticatedUser(authenticated.email());
         return ResponseEntity.ok(user);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDto>> getAll() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+    
 }
