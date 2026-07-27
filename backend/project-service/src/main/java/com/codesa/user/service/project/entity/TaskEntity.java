@@ -2,10 +2,12 @@ package com.codesa.user.service.project.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -16,10 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-
-import org.springframework.scheduling.config.Task;
 
 @Getter
 @Setter
@@ -27,12 +26,16 @@ import org.springframework.scheduling.config.Task;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "projects")
-public class ProjectEntity {
+@Table(name = "tasks")
+public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private ProjectEntity project;
 
     @Column(nullable = false, length = 150)
     private String name;
@@ -42,13 +45,7 @@ public class ProjectEntity {
 
     @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
-    private String status = "ACTIVE";
-
-    @Column(name = "owner_id", nullable = false)
-    private UUID ownerId;
-
-    @Column(name = "owner_full_name", length = 150)
-    private String ownerName;
+    private String status = "CREATED";
 
     @Column(name = "assigned_id", nullable = false)
     private UUID assignedId;
@@ -62,14 +59,14 @@ public class ProjectEntity {
     @Column(name = "finish_at")
     private LocalDateTime finishAt;
 
+    @Column(name = "due_date")
+    private LocalDateTime dueDate;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "project")
-    private List<TaskEntity> tasks;
 
     @PrePersist
     protected void onCreate() {
