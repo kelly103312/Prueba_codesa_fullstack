@@ -6,28 +6,24 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProjectService } from '../../../core/services/project.service';
-import { TaskService } from '../../../core/services/task.service';
 import { UserService } from '../../../core/services/user.service';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { User } from '../../../core/models/auth';
-import { TaskListResponse } from '../../../core/models/task';
 import { PROJECT_STATUSES } from '../constants/project-constants';
-import { TaskList } from '../../tasks/task-list/task-list';
+import { TaskSection } from '../../tasks/task-section/task-section';
 
 @Component({
   selector: 'app-project-form',
-  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule, TaskList],
+  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule, TaskSection],
   templateUrl: './project-form.html',
-  styleUrl: './project-form.scss',
   providers: [MessageService],
 })
 export class ProjectForm implements OnInit {
   private fb = inject(FormBuilder);
   private projectService = inject(ProjectService);
-  private taskService = inject(TaskService);
   private userService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -37,9 +33,12 @@ export class ProjectForm implements OnInit {
   form: FormGroup;
   loading = false;
   users = signal<User[]>([]);
-  tasks = signal<TaskListResponse[]>([]);
-  tasksLoading = signal(false);
-  private projectId: string | null = null;
+  projectStatus = signal<string | null>(null);
+  private _projectId: number | null = null;
+
+  get projectId(): number {
+    return this._projectId!;
+  }
 
   statusOptions = PROJECT_STATUSES;
 
@@ -56,25 +55,25 @@ export class ProjectForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projectId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = this.projectId !== null && this.projectId !== 'new';
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = idParam !== null && idParam !== 'new';
+    this._projectId = this.isEditMode ? Number(idParam) : null;
 
     this.userService.getAll().subscribe((users) => {
       this.users.set(users);
       if (this.isEditMode) {
         this.loadProject();
-        this.loadTasks();
       }
     });
   }
 
   private loadProject(): void {
     this.loading = true;
-    const id = Number(this.projectId);
-    this.projectService.getById(id).subscribe({
+    this.projectService.getById(this._projectId!).subscribe({
       next: (res) => {
         const p = res.data;
         const matched = this.users().find((u) => u.fullName === p.assignedName);
+        this.projectStatus.set(p.status ?? 'NONE');
         this.form.patchValue({
           name: p.name,
           description: p.description,
@@ -92,35 +91,6 @@ export class ProjectForm implements OnInit {
     });
   }
 
-  private loadTasks(): void {
-    this.tasksLoading.set(true);
-    this.taskService.getAllByProject(Number(this.projectId)).subscribe({
-      next: (res) => {
-        this.tasks.set(res.data);
-        this.tasksLoading.set(false);
-      },
-      error: () => this.tasksLoading.set(false),
-    });
-  }
-
-  onEditTask(taskId: number): void {
-    this.router.navigate(['/tasks', taskId, 'edit', this.projectId]);
-  }
-
-  onDeleteTask(taskId: number): void {
-    this.taskService.delete(taskId).subscribe({
-      next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Eliminada', detail: 'Tarea eliminada exitosamente' });
-        this.loadTasks();
-      },
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la tarea' }),
-    });
-  }
-
-  onAddTask(): void {
-    this.router.navigate(['/tasks/new', this.projectId]);
-  }
-
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -133,7 +103,7 @@ export class ProjectForm implements OnInit {
 
     const payload = {
       ...formValue,
-      id: this.isEditMode ? Number(this.projectId) : undefined,
+      id: this.isEditMode ? this._projectId : undefined,
       assignedName: selectedUser?.fullName ?? '',
       assignedId: selectedUser?.id ?? '',
     };

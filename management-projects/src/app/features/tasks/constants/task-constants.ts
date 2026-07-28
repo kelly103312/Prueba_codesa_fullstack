@@ -1,5 +1,5 @@
 export const TASK_STATUSES = [
-  { label: 'Pendiente', value: 'PENDING' },
+  { label: 'Creada', value: 'CREATED' },
   { label: 'En Progreso', value: 'IN_PROGRESS' },
   { label: 'Completado', value: 'DONE' },
   { label: 'Vencida', value: 'OVERDUE' },
@@ -13,7 +13,7 @@ export type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'c
 
 export function getTaskSeverity(status: string): Severity {
   switch (status) {
-    case 'PENDING':
+    case 'CREATED':
       return 'info';
     case 'IN_PROGRESS':
       return 'warn';

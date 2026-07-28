@@ -68,19 +68,10 @@
     </form>
 
     @if (isEditMode) {
-      <p-card header="Tareas" class="mt-4">
-        <ng-template #title>
-          <div class="flex align-items-center justify-content-between">
-            <span>Tareas</span>
-            <button pButton icon="pi pi-plus" severity="success" (click)="onAddTask()" label="Nueva tarea"></button>
-          </div>
-        </ng-template>
-        <app-task-list
-          [tasks]="tasks()"
-          [loading]="tasksLoading()"
-          (editTask)="onEditTask($event)"
-          (deleteTask)="onDeleteTask($event)" />
-      </p-card>
+      <app-task-section
+        class="mt-4"
+        [projectId]="projectId"
+        [archived]="projectStatus() === 'ARCHIVED'" />
     }
   </div>
 </div>

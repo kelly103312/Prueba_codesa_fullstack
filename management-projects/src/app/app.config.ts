@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import Aura from '@primeng/themes/aura';
 import { definePreset } from '@primeng/themes';
 
@@ -61,6 +61,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([authInterceptor, errorInterceptor]),
     ),
+    ConfirmationService,
     MessageService,
     providePrimeNG({
       theme: {

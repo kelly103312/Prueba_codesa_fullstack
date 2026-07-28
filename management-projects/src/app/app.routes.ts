@@ -11,9 +11,5 @@ export const routes: Routes = [
       loadChildren: () => import('./features/projects/projects.routes')
          .then(m => m.PROJECTS_ROUTES)
   },
-  {
-      path: 'tasks',
-      loadChildren: () => import('./features/tasks/tasks.routes')
-         .then(m => m.TASKS_ROUTES)
-  },
+
 ];
