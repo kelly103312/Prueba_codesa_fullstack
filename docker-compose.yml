@@ -49,6 +49,22 @@ services:
     networks:
       - app-network
 
+  gateway:
+    build: ./backend/gateway/
+    depends_on:
+      user-service:
+        condition: service_started
+      project-service:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8080
+      USER_SERVICE_URL: http://user-service:8001
+      PROJECT_SERVICE_URL: http://project-service:8002
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
