@@ -1,13 +1,28 @@
 package com.codesa.user.service.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private UUID id;
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Formato de email inválido")
     private String email;
+
+    @NotBlank(message = "El nombre es obligatorio")
     private String fullName;
+
+    @NotBlank(message = "El rol es obligatorio")
     private String role;
+
+    @NotBlank(message = "La contraseña es obligatoria")
+    private String password;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -41,6 +56,14 @@ public class UserDto {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public LocalDateTime getCreatedAt() {

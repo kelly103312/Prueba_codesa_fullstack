@@ -2,40 +2,30 @@ package com.codesa.user.service.demo.mapper;
 
 import com.codesa.user.service.demo.dto.UserDto;
 import com.codesa.user.service.demo.entity.UserEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public UserDto toDto(UserEntity entity) {
-        if (entity == null) {
-            return null;
-        }
+    @Mapping(target = "role", source = "role", qualifiedByName = "enumToString")
+    UserDto toDto(UserEntity entity);
 
-        UserDto dto = new UserDto();
-        dto.setId(entity.getId());
-        dto.setEmail(entity.getEmail());
-        dto.setFullName(entity.getFullName());
-        dto.setRole(entity.getRole() != null ? entity.getRole().name() : null);
-        dto.setCreatedAt(entity.getCreatedAt());
-        dto.setUpdatedAt(entity.getUpdatedAt());
-        return dto;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "passwordHash", ignore = true)
+    @Mapping(target = "role", source = "role", qualifiedByName = "stringToEnum")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    UserEntity toEntity(UserDto dto);
+
+    @Named("enumToString")
+    default String enumToString(UserEntity.Role role) {
+        return role != null ? role.name() : null;
     }
 
-    public UserEntity toEntity(UserDto dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        UserEntity entity = new UserEntity();
-        entity.setId(dto.getId());
-        entity.setEmail(dto.getEmail());
-        entity.setFullName(dto.getFullName());
-        if (dto.getRole() != null) {
-            entity.setRole(UserEntity.Role.valueOf(dto.getRole()));
-        }
-        entity.setCreatedAt(dto.getCreatedAt());
-        entity.setUpdatedAt(dto.getUpdatedAt());
-        return entity;
+    @Named("stringToEnum")
+    default UserEntity.Role stringToEnum(String role) {
+        return role != null ? UserEntity.Role.valueOf(role) : null;
     }
 }

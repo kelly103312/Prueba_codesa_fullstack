@@ -1,9 +1,12 @@
 package com.codesa.user.service.demo.service;
 
 import com.codesa.user.service.demo.dto.UserDto;
+import com.codesa.user.service.demo.entity.UserEntity;
+import com.codesa.user.service.demo.exception.ConflictException;
 import com.codesa.user.service.demo.exception.UserNotFoundException;
 import com.codesa.user.service.demo.mapper.UserMapper;
 import com.codesa.user.service.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +17,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto getUserById(UUID id) {
@@ -37,6 +42,17 @@ public class UserService {
                 .stream()
                 .map(userMapper::toDto)
                 .toList();
+    }
+    public UserDto createUser(UserDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new ConflictException("El email " + userDto.getEmail() + " ya está registrado");
+        }
+
+        UserEntity userEntity = userMapper.toEntity(userDto);
+        userEntity.setId(UUID.randomUUID());
+        userEntity.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+        UserEntity savedUser = userRepository.save(userEntity);
+        return userMapper.toDto(savedUser);
     }
 
 }
