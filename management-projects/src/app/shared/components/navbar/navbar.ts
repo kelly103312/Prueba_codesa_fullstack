@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { AuthService } from '../../services/auth.service';
 import { MenuItem } from 'primeng/api';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',

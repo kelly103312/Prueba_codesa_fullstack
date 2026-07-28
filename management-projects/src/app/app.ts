@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { Navbar } from './core/components/navbar/navbar';
 import { filter } from 'rxjs';
+import { Navbar } from './shared/components/navbar/navbar';
 
 @Component({
   selector: 'app-root',
