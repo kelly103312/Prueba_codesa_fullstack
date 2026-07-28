@@ -12,7 +12,7 @@ spring:
             allow-credentials: true
       routes:
         - id: user-service
-          uri: ${USER_SERVICE_URL:http://localhost:8000}
+          uri: ${USER_SERVICE_URL:http://localhost:8001}
           predicates:
             - Path=/api/auth/**,/api/users/**
           filters:

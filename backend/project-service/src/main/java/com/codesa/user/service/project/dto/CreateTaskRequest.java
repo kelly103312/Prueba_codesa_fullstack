@@ -17,6 +17,7 @@ public class CreateTaskRequest {
     private String name;
     private Long projectId;
     private String description;
+    private String status;
     private UUID assignedId;
     private String assignedName;
     private LocalDateTime startAt;
