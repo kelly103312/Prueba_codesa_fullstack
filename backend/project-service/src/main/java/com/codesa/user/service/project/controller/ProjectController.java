@@ -50,8 +50,7 @@ public class ProjectController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ApiResponse<ProjectDto>> updateProject(
-            @RequestBody UpdateProjectRequest request) {
+    public ResponseEntity<ApiResponse<ProjectDto>> updateProject(@RequestBody UpdateProjectRequest request) {
         ProjectDto dto = projectMapper.toDtoFromUpdate(request);
         ApiResponse<ProjectDto> response = projectService.update(dto);
         return ResponseEntity.ok(response);
