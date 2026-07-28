@@ -22,5 +22,7 @@ public class TaskListResponseDto {
     private String status;
     private UUID assignedId;
     private String assignedName;
+    private LocalDateTime startAt;
+    private LocalDateTime finishAt;
     private LocalDateTime dueDate;
 }

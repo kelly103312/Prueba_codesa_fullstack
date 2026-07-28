@@ -6,17 +6,20 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProjectService } from '../../../core/services/project.service';
+import { TaskService } from '../../../core/services/task.service';
 import { UserService } from '../../../core/services/user.service';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { User } from '../../../core/models/auth';
+import { TaskListResponse } from '../../../core/models/task';
 import { PROJECT_STATUSES } from '../constants/project-constants';
+import { TaskList } from '../../tasks/task-list/task-list';
 
 @Component({
   selector: 'app-project-form',
-  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule],
+  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule, TaskList],
   templateUrl: './project-form.html',
   styleUrl: './project-form.scss',
   providers: [MessageService],
@@ -24,6 +27,7 @@ import { PROJECT_STATUSES } from '../constants/project-constants';
 export class ProjectForm implements OnInit {
   private fb = inject(FormBuilder);
   private projectService = inject(ProjectService);
+  private taskService = inject(TaskService);
   private userService = inject(UserService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -33,6 +37,8 @@ export class ProjectForm implements OnInit {
   form: FormGroup;
   loading = false;
   users = signal<User[]>([]);
+  tasks = signal<TaskListResponse[]>([]);
+  tasksLoading = signal(false);
   private projectId: string | null = null;
 
   statusOptions = PROJECT_STATUSES;
@@ -57,6 +63,7 @@ export class ProjectForm implements OnInit {
       this.users.set(users);
       if (this.isEditMode) {
         this.loadProject();
+        this.loadTasks();
       }
     });
   }
@@ -83,6 +90,35 @@ export class ProjectForm implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el proyecto' });
       },
     });
+  }
+
+  private loadTasks(): void {
+    this.tasksLoading.set(true);
+    this.taskService.getAllByProject(Number(this.projectId)).subscribe({
+      next: (res) => {
+        this.tasks.set(res.data);
+        this.tasksLoading.set(false);
+      },
+      error: () => this.tasksLoading.set(false),
+    });
+  }
+
+  onEditTask(taskId: number): void {
+    this.router.navigate(['/tasks', taskId, 'edit', this.projectId]);
+  }
+
+  onDeleteTask(taskId: number): void {
+    this.taskService.delete(taskId).subscribe({
+      next: () => {
+        this.messageService.add({ severity: 'success', summary: 'Eliminada', detail: 'Tarea eliminada exitosamente' });
+        this.loadTasks();
+      },
+      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la tarea' }),
+    });
+  }
+
+  onAddTask(): void {
+    this.router.navigate(['/tasks/new', this.projectId]);
   }
 
   onSubmit(): void {

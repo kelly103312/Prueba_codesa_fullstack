@@ -55,6 +55,11 @@ public class TaskController {
         ApiResponse<List<TaskListResponseDto>> tasks = taskService.getByProjectId(projectId);
         return ResponseEntity.ok(tasks);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<TaskDto>> getTasksByID(@PathVariable Long id) {
+        ApiResponse<TaskDto> tasks = taskService.getById(id);
+        return ResponseEntity.ok(tasks);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteTask(@PathVariable Long id) {
