@@ -34,3 +34,12 @@ app:
 jwt:
   secret: ${JWT_SECRET:mi-secret-clave-super-segura-para-demo-2026}
   expiration: ${JWT_EXPIRATION:3600000}
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
