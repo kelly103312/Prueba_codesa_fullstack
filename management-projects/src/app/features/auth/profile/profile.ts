@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
-import { AuthService } from '../../core/services/auth.service';
-import { User } from '../../core/models/auth';
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../../core/models/auth';
 
 @Component({
   selector: 'app-profile',
