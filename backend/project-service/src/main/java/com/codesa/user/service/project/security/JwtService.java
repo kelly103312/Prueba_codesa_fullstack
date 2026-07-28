@@ -19,20 +19,6 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expirationMs;
 
-    public String generateToken(String userId, String role, String email) {
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + expirationMs);
-
-        return Jwts.builder()
-                .subject(userId)
-                .claim("role", role)
-                .claim("email", email)
-                .issuedAt(now)
-                .expiration(expiry)
-                .signWith(getSigningKey())
-                .compact();
-    }
-
     public String extractUserId(String token) {
         return extractClaims(token).getSubject();
     }
@@ -41,8 +27,8 @@ public class JwtService {
         return extractClaims(token).get("role", String.class);
     }
 
-    public String extractEmail(String token) {
-        return extractClaims(token).get("email", String.class);
+    public String extractName(String token) {
+        return extractClaims(token).get("name", String.class);
     }
 
     public Claims extractAllClaims(String token) {
