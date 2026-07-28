@@ -13,12 +13,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { User } from '../../../core/models/auth';
 import { PROJECT_STATUSES } from '../constants/project-constants';
+import { TaskSection } from '../../tasks/task-section/task-section';
 
 @Component({
   selector: 'app-project-form',
-  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule],
+  imports: [ReactiveFormsModule, CardModule, ButtonModule, ToastModule, SelectModule, DatePickerModule, InputTextModule, TextareaModule, TaskSection],
   templateUrl: './project-form.html',
-  styleUrl: './project-form.scss',
   providers: [MessageService],
 })
 export class ProjectForm implements OnInit {
@@ -33,7 +33,12 @@ export class ProjectForm implements OnInit {
   form: FormGroup;
   loading = false;
   users = signal<User[]>([]);
-  private projectId: string | null = null;
+  projectStatus = signal<string | null>(null);
+  private _projectId: number | null = null;
+
+  get projectId(): number {
+    return this._projectId!;
+  }
 
   statusOptions = PROJECT_STATUSES;
 
@@ -50,8 +55,9 @@ export class ProjectForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projectId = this.route.snapshot.paramMap.get('id');
-    this.isEditMode = this.projectId !== null && this.projectId !== 'new';
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.isEditMode = idParam !== null && idParam !== 'new';
+    this._projectId = this.isEditMode ? Number(idParam) : null;
 
     this.userService.getAll().subscribe((users) => {
       this.users.set(users);
@@ -63,11 +69,11 @@ export class ProjectForm implements OnInit {
 
   private loadProject(): void {
     this.loading = true;
-    const id = Number(this.projectId);
-    this.projectService.getById(id).subscribe({
+    this.projectService.getById(this._projectId!).subscribe({
       next: (res) => {
         const p = res.data;
         const matched = this.users().find((u) => u.fullName === p.assignedName);
+        this.projectStatus.set(p.status ?? 'NONE');
         this.form.patchValue({
           name: p.name,
           description: p.description,
@@ -97,7 +103,7 @@ export class ProjectForm implements OnInit {
 
     const payload = {
       ...formValue,
-      id: this.isEditMode ? Number(this.projectId) : undefined,
+      id: this.isEditMode ? this._projectId : undefined,
       assignedName: selectedUser?.fullName ?? '',
       assignedId: selectedUser?.id ?? '',
     };

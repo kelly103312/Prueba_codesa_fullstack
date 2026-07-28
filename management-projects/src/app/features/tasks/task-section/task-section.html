@@ -1,0 +1,26 @@
+<p-toast />
+
+<p-card header="Tareas">
+  <app-task-list
+    [tasks]="tasks()"
+    [loading]="loading()"
+    [showAddButton]="!archived()"
+    (editTask)="openEdit($event)"
+    (deleteTask)="onDelete($event)"
+    (addTask)="openNew()" />
+</p-card>
+
+<p-dialog
+  [(visible)]="showDialog"
+  [header]="editingTask() ? 'Editar Tarea' : 'Nueva Tarea'"
+  [modal]="true"
+  [style]="{ width: '100rem' }"
+  (onHide)="onCancelled()">
+  @if (showDialog()) {
+    <app-task-form
+      [projectId]="projectId()"
+      [task]="editingTask()"
+      (saved)="onSaved()"
+      (cancelled)="onCancelled()" />
+  }
+</p-dialog>

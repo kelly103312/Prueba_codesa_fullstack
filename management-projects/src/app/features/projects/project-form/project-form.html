@@ -1,7 +1,7 @@
 <p-toast />
 
 <div class="flex justify-content-center p-4">
-  <div class="w-full h-full">
+  <div class="w-full">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <p-card header="{{ isEditMode ? 'Editar Proyecto' : 'Crear Proyecto' }}">
         <div class="p-fluid flex flex-column gap-3">
@@ -21,9 +21,8 @@
             }
           </div>
 
-          
           <div class="flex gap-3">
-            <div class="flex-1" [hidden]="!isEditMode">
+            <div class="flex-1">
               <div class="p-field flex flex-column">
                 <label for="status" class="mb-2">Estado</label>
                 <p-select [options]="statusOptions" id="status" formControlName="status" [checkmark]="true" optionLabel="label" optionValue="value" [showClear]="true" placeholder="Selecciona un estado" class="w-full" />
@@ -67,5 +66,12 @@
         </div>
       </p-card>
     </form>
+
+    @if (isEditMode) {
+      <app-task-section
+        class="mt-4"
+        [projectId]="projectId"
+        [archived]="projectStatus() === 'ARCHIVED'" />
+    }
   </div>
 </div>

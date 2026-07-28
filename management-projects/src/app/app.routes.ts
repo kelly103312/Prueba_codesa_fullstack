@@ -7,8 +7,9 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
   },
   {
-     path: 'projects',
-     loadChildren: () => import('./features/projects/projects.routes')
-        .then(m => m.PROJECTS_ROUTES)
+      path: 'projects',
+      loadChildren: () => import('./features/projects/projects.routes')
+         .then(m => m.PROJECTS_ROUTES)
   },
+
 ];

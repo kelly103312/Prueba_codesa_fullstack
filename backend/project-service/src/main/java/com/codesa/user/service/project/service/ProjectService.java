@@ -11,6 +11,7 @@ import com.codesa.user.service.project.exception.InvalidStatusException;
 import com.codesa.user.service.project.exception.NotFoundException;
 import com.codesa.user.service.project.mapper.ProjectMapper;
 import com.codesa.user.service.project.repository.ProjectRepository;
+import com.codesa.user.service.project.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +21,12 @@ import java.util.UUID;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
     private final ProjectMapper projectMapper;
 
-    public ProjectService(ProjectRepository projectRepository, ProjectMapper projectMapper) {
+    public ProjectService(ProjectRepository projectRepository, TaskRepository taskRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
         this.projectMapper = projectMapper;
     }
 
@@ -75,9 +78,7 @@ public class ProjectService {
             ProjectEntity entity = projectRepository.findById(id)
                     .orElseThrow(() -> new NotFoundException("Project not found with id: " + id));
 
-            // TODO: validar que no tenga tareas asociadas cuando exista el task-service
-            boolean hasTasks = false;
-            if (hasTasks) {
+            if (taskRepository.existsByProjectId(id)) {
                 return ApiResponse.error(400, "Cannot delete project with existing tasks");
             }
             projectRepository.delete(entity);

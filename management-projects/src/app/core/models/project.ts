@@ -1,13 +1,4 @@
-export interface Task {
-  id: number;
-  name: string;
-  description: string;
-  status: string;
-  assignedUser: string;
-  ownerUser: string;
-  startDate: Date;
-  finishDate: Date;
-}
+import { Task } from "./task";
 
 export interface Project {
   id: number;
