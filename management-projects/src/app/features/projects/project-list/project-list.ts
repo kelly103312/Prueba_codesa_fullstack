@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ProjectListResponse } from '../../../core/models/project';
 import { ProjectService } from '../../../core/services/project.service';
@@ -17,10 +16,10 @@ import { PROJECT_STATUSES, getProjectSeverity, getProjectStatusLabel, Severity }
 
 @Component({
   selector: 'app-project-list',
-  imports: [SelectModule, IconFieldModule, InputIconModule, TableModule, TagModule, ButtonModule, InputTextModule, FormsModule, ConfirmDialogModule, ToastModule],
+  imports: [SelectModule, IconFieldModule, InputIconModule, TableModule, TagModule, ButtonModule, InputTextModule, FormsModule, ToastModule],
   templateUrl: './project-list.html',
   styleUrl: './project-list.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [MessageService],
 })
 export class ProjectList implements OnInit {
     projects = signal<ProjectListResponse[]>([]);
@@ -61,7 +60,9 @@ export class ProjectList implements OnInit {
             header: 'Archivar proyecto',
             icon: 'pi pi-box',
             acceptLabel: 'Sí, archivar',
-            rejectLabel: 'Cancelar', 
+            rejectLabel: 'Cancelar',
+            acceptButtonStyleClass: 'p-button-success',
+            rejectButtonStyleClass: 'p-button-secondary',
             accept: () => {
                 this.projectService.changeStatusByID(id, 'ARCHIVED').subscribe({
                     next: () => {
@@ -80,9 +81,11 @@ export class ProjectList implements OnInit {
         this.confirmationService.confirm({
             message: '¿Estás seguro de que deseas eliminar este proyecto?',
             header: 'Eliminar proyecto',
-            icon: 'pi pi-box',
+            icon: 'pi pi-trash',
             acceptLabel: 'Sí, eliminar',
-            rejectLabel: 'Cancelar', 
+            rejectLabel: 'Cancelar',
+            acceptButtonStyleClass: 'p-button-primary',
+            rejectButtonStyleClass: 'p-button-secondary',
             accept: () => {
                 this.projectService.delete(id).subscribe({
                     next: () => {

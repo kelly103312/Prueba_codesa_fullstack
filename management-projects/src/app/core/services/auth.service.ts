@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { TokenService } from './token.service';
 import { HashService } from './hash.service';
 import { LoginRequest, LoginResponse, User } from '../models/auth';
+import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -43,5 +44,9 @@ export class AuthService {
     this.user.set(null);
     this.isAuthenticated.set(false);
     this.router.navigate(['/login']);
+  }
+
+  getProfile(): Observable<ApiResponse<User>> {
+    return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/users/me`);
   }
 }

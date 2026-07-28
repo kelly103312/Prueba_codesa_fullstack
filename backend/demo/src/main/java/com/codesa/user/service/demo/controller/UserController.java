@@ -1,5 +1,6 @@
 package com.codesa.user.service.demo.controller;
 
+import com.codesa.user.service.demo.dto.ApiResponse;
 import com.codesa.user.service.demo.dto.UserDto;
 import com.codesa.user.service.demo.security.AuthenticatedUser;
 import com.codesa.user.service.demo.service.UserService;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/users")
@@ -23,16 +26,23 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable UUID id) {
         UserDto user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(ApiResponse.ok("Usuario encontrado", user));
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getAuthenticatedUser() {
+    public ResponseEntity<ApiResponse<UserDto>> getAuthenticatedUser() {
         AuthenticatedUser authenticated = (AuthenticatedUser) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
-        UserDto user = userService.getAuthenticatedUser(authenticated.email());
-        return ResponseEntity.ok(user);
+        UserDto user = userService.getUserById(UUID.fromString(authenticated.userId()));
+        return ResponseEntity.ok(ApiResponse.ok("Usuario autenticado", user));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAll() {
+        List<UserDto> users = userService.getAllUsers();
+        return ResponseEntity.ok(ApiResponse.ok("Lista de usuarios", users));
+    }
+    
 }

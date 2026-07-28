@@ -6,6 +6,7 @@ import com.codesa.user.service.demo.mapper.UserMapper;
 import com.codesa.user.service.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,13 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .map(userMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con el email proporcionado"));
+    }
+
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
 }
