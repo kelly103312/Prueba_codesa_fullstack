@@ -1,0 +1,14 @@
+<div class="flex align-items-center justify-content-between bg-primary p-2 px-4">
+  <div class="flex align-items-center gap-2">
+    <span class="text-xl font-bold text-white">Gestión Proyectos</span>
+    <p-menubar [model]="items" styleClass="bg-transparent border-none ml-4">
+      <ng-template #item let-item>
+        <button pButton link [icon]="item.icon" [label]="item.label" (click)="item.command()"></button>
+      </ng-template>
+    </p-menubar>
+  </div>
+  <div class="flex align-items-center gap-3">
+    <span class="text-white-alpha-80">{{ userName }}</span>
+    <button pButton icon="pi pi-sign-out" severity="contrast" rounded text (click)="logout()" pTooltip="Cerrar sesión"></button>
+  </div>
+</div>
