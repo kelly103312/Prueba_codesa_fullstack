@@ -1,5 +1,6 @@
 package com.codesa.user.service.demo.controller;
 
+import com.codesa.user.service.demo.dto.ApiResponse;
 import com.codesa.user.service.demo.dto.AuthenticatedRequestDto;
 import com.codesa.user.service.demo.dto.AuthResponseDto;
 import com.codesa.user.service.demo.service.AuthService;
@@ -24,14 +25,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticatedRequestDto request) {
+    public ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody AuthenticatedRequestDto request) {
         log.info("Llegó petición a /auth/login - email: {}, password: {}", request.getEmail(), request.getPassword());
-        try {
-            AuthResponseDto response = authService.login(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            log.error("Error en login: {}", e.getMessage());
-            throw e;
-        }
+        AuthResponseDto response = authService.login(request);
+        return ResponseEntity.ok(ApiResponse.ok("Inicio de sesión exitoso", response));
     }
 }
