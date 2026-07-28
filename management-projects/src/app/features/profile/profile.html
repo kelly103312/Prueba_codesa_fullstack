@@ -1,0 +1,28 @@
+<div class="flex justify-content-center p-4">
+  <div class="w-full md:w-30rem">
+    <p-card header="Mi Perfil">
+      <div class="flex flex-column align-items-center gap-3">
+        <div class="border-circle bg-primary flex align-items-center justify-content-center" style="width: 6rem; height: 6rem;">
+          <span class="text-4xl text-white font-bold">{{ user?.fullName?.charAt(0) }}</span>
+        </div>
+
+        <p-tag [value]="'Rol: ' + (user?.role ?? '')" [severity]="roleSeverity" />
+
+        <div class="w-full mt-3">
+          <div class="flex justify-content-between py-2 border-bottom-1 surface-border">
+            <span class="font-semibold">Nombre</span>
+            <span>{{ user?.fullName }}</span>
+          </div>
+          <div class="flex justify-content-between py-2 border-bottom-1 surface-border">
+            <span class="font-semibold">Email</span>
+            <span>{{ user?.email }}</span>
+          </div>
+          <div class="flex justify-content-between py-2">
+            <span class="font-semibold">ID</span>
+            <span>{{ user?.id }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

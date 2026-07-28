@@ -34,7 +34,7 @@ public class UserController {
     public ResponseEntity<UserDto> getAuthenticatedUser() {
         AuthenticatedUser authenticated = (AuthenticatedUser) SecurityContextHolder
                 .getContext().getAuthentication().getPrincipal();
-        UserDto user = userService.getAuthenticatedUser(authenticated.email());
+        UserDto user = userService.getUserById(UUID.fromString(authenticated.userId()));
         return ResponseEntity.ok(user);
     }
 

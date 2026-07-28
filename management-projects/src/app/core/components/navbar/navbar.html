@@ -8,7 +8,7 @@
     </p-menubar>
   </div>
   <div class="flex align-items-center gap-3">
-    <span class="text-white-alpha-80">{{ userName }}</span>
+    <button pButton icon="pi pi-user" link (click)="goToProfile()" label="{{ userName }}"></button>
     <button pButton icon="pi pi-sign-out" severity="contrast" rounded text (click)="logout()" pTooltip="Cerrar sesión"></button>
   </div>
 </div>
