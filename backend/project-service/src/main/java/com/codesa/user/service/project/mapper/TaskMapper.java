@@ -20,9 +20,9 @@ public interface TaskMapper {
     List<TaskListResponseDto> toListDto(List<TaskEntity> entities);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "status", defaultValue = "CREATED")
     TaskDto toDtoFromCreate(CreateTaskRequest request);
 
     @Mapping(target = "createdAt", ignore = true)

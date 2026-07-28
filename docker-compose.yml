@@ -64,6 +64,15 @@ services:
       - "8080:8080"
     networks:
       - app-network
+  front:
+    build: ./management-projects/
+    depends_on:
+      gateway:
+        condition: service_started
+    ports:
+      - "4200:80"
+    networks:
+      - app-network
 
 networks:
   app-network:
