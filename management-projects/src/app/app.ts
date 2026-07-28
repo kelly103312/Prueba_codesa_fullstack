@@ -16,7 +16,7 @@ export class App {
 
   constructor(private router: Router) {
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe(() => {
-      this.showNavbar = this.router.url !== '/login';
+      this.showNavbar = this.router.url !== '/login' && this.router.url !== '/login/register';
     });
   }
 }

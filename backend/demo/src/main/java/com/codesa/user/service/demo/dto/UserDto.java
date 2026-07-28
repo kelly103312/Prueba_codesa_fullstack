@@ -17,7 +17,6 @@ public class UserDto {
     @NotBlank(message = "El nombre es obligatorio")
     private String fullName;
 
-    @NotBlank(message = "El rol es obligatorio")
     private String role;
 
     @NotBlank(message = "La contraseña es obligatoria")

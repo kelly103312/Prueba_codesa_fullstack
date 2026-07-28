@@ -51,6 +51,9 @@ public class UserService {
         UserEntity userEntity = userMapper.toEntity(userDto);
         userEntity.setId(UUID.randomUUID());
         userEntity.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+        if (userEntity.getRole() == null) {
+            userEntity.setRole(UserEntity.Role.USER);
+        }
         UserEntity savedUser = userRepository.save(userEntity);
         return userMapper.toDto(savedUser);
     }
