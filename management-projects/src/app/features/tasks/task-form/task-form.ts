@@ -7,6 +7,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { TaskService } from '../../../core/services/task.service';
 import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/auth';
 import { Task } from '../../../core/models/task';
 import { TASK_STATUSES } from '../constants/task-constants';
@@ -20,6 +21,7 @@ export class TaskForm implements OnInit {
   private fb = inject(FormBuilder);
   private taskService = inject(TaskService);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
 
   projectId = input.required<number>();
   task = input<Task | null>(null);
@@ -65,17 +67,33 @@ export class TaskForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe((users) => this.users.set(users));
+    this.userService.getAll().subscribe((users) => {
+      this.users.set(users);
 
-    const taskData = this.task();
-    if (taskData) {
-      this.isEditMode = true;
-      this.form.patchValue({
-        ...taskData,
-        startAt: new Date(taskData.startAt),
-        finishAt: new Date(taskData.finishAt),
-        dueDate: new Date(taskData.dueDate),
-      });
+      const taskData = this.task();
+      if (taskData) {
+        this.isEditMode = true;
+        this.form.patchValue({
+          ...taskData,
+          startAt: new Date(taskData.startAt),
+          finishAt: new Date(taskData.finishAt),
+          dueDate: new Date(taskData.dueDate),
+        });
+        if (!this.authService.isAdmin()) {
+          this.form.get('assignedId')?.disable();
+        }
+      } else {
+        this.assignToCurrentUser();
+      }
+    });
+  }
+
+  private assignToCurrentUser(): void {
+    const currentUser = this.authService.user();
+    if (!currentUser) return;
+    this.form.patchValue({ assignedId: currentUser.id });
+    if (!this.authService.isAdmin()) {
+      this.form.get('assignedId')?.disable();
     }
   }
 
@@ -86,7 +104,7 @@ export class TaskForm implements OnInit {
     }
 
     this.loading = true;
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const selectedUser = this.users().find((u) => u.id === formValue.assignedId);
 
     const payload = {

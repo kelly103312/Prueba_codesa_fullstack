@@ -46,7 +46,10 @@ export class ProjectList implements OnInit {
                 this.projects.set(res.data);
                 this.loading.set(false);
             },
-            error: () => this.loading.set(false),
+            error: () => {
+                this.loading.set(false);
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar los proyectos' });
+            },
         });
     }
 
@@ -69,8 +72,8 @@ export class ProjectList implements OnInit {
                         this.messageService.add({ severity: 'success', summary: 'Archivado', detail: 'Proyecto archivado exitosamente' });
                         this.loadProjects();
                     },
-                    error: () => {
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo archivar el proyecto' });
+                    error: (err) => {
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message || 'No se pudo archivar el proyecto' });
                     },
                 });
             },
@@ -92,8 +95,8 @@ export class ProjectList implements OnInit {
                         this.messageService.add({ severity: 'success', summary: 'Eliminado', detail: 'Proyecto eliminado exitosamente' });
                         this.loadProjects();
                     },
-                    error: () => {
-                        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el proyecto' });
+                    error: (err) => {
+                        this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message || 'No se pudo eliminar el proyecto' });
                     },
                 });
             },

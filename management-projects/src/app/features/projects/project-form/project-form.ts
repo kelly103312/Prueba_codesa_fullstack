@@ -7,6 +7,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ProjectService } from '../../../core/services/project.service';
 import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
@@ -25,6 +26,7 @@ export class ProjectForm implements OnInit {
   private fb = inject(FormBuilder);
   private projectService = inject(ProjectService);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private messageService = inject(MessageService);
@@ -72,8 +74,19 @@ export class ProjectForm implements OnInit {
       this.users.set(users);
       if (this.isEditMode) {
         this.loadProject();
+      } else {
+        this.assignToCurrentUser();
       }
     });
+  }
+
+  private assignToCurrentUser(): void {
+    const currentUser = this.authService.user();
+    if (!currentUser) return;
+    this.form.patchValue({ assignedId: currentUser.id });
+    if (!this.authService.isAdmin()) {
+      this.form.get('assignedId')?.disable();
+    }
   }
 
   private loadProject(): void {
@@ -91,6 +104,9 @@ export class ProjectForm implements OnInit {
           finishAt: new Date(p.finishAt),
           assignedId: matched ? matched.id : null,
         });
+        if (!this.authService.isAdmin()) {
+          this.form.get('assignedId')?.disable();
+        }
         this.loading = false;
       },
       error: () => {
@@ -107,7 +123,7 @@ export class ProjectForm implements OnInit {
     }
 
     this.loading = true;
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
     const selectedUser = this.users().find((u) => u.id === formValue.assignedId);
 
     const payload = {
@@ -116,7 +132,7 @@ export class ProjectForm implements OnInit {
       assignedName: selectedUser?.fullName ?? '',
       assignedId: selectedUser?.id ?? '',
     };
-
+    console.log('Payload to submit:', payload);
     const request = this.isEditMode
       ? this.projectService.update(payload)
       : this.projectService.create(payload);
