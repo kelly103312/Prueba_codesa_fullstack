@@ -43,7 +43,25 @@ export class TaskForm implements OnInit {
       startAt: ['', Validators.required],
       finishAt: ['', Validators.required],
       dueDate: ['', Validators.required],
-    });
+    }, { validators: this.taskDateValidator });
+  }
+
+  private taskDateValidator(group: FormGroup) {
+    const start = group.get('startAt')?.value;
+    const finish = group.get('finishAt')?.value;
+    const due = group.get('dueDate')?.value;
+
+    if (!start || !finish || !due) return null;
+    const errors: Record<string, boolean> = {};
+
+    if (new Date(start) >= new Date(finish)) {
+      errors['dateRange'] = true;
+    }
+    if (new Date(start) > new Date(due)) {
+      errors['dueBeforeStart'] = true;
+    }
+
+    return Object.keys(errors).length ? errors : null;
   }
 
   ngOnInit(): void {
