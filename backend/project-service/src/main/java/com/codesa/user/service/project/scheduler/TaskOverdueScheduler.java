@@ -31,7 +31,7 @@ public class TaskOverdueScheduler {
         }
         if (!overdueTasks.isEmpty()) {
             taskRepository.saveAll(overdueTasks);
-            log.info("Updated {} task(s) to OVERDUE", overdueTasks.size());
+            log.info("Se  actualizaron {} tareas a OVERDUE", overdueTasks.size());
         }else{
             log.info("No se encontraron tareas para cambio de estado");
 
