@@ -9,6 +9,7 @@ import { definePreset } from '@primeng/themes';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { apiResponseInterceptor } from './core/interceptors/api-response.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 const redTheme = definePreset(Aura, {
@@ -59,7 +60,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     provideHttpClient(
-      withInterceptors([authInterceptor, errorInterceptor]),
+      withInterceptors([authInterceptor, apiResponseInterceptor, errorInterceptor]),
     ),
     ConfirmationService,
     MessageService,

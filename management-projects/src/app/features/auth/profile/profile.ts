@@ -15,11 +15,9 @@ export class Profile implements OnInit {
   user: User | null = null;
 
   ngOnInit(): void {
-    this.authService.getProfile().subscribe({
+    this.authService.loadProfile().subscribe({
       next: (res) => {
         this.user = res.data;
-        console.log(this.user)
-        this.authService.user.set(res.data);
       },
       error: () => {
         this.user = this.authService.user();

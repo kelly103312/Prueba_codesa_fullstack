@@ -47,6 +47,9 @@
                 @if (form.get('finishAt')?.invalid && (form.get('finishAt')?.touched || form.get('finishAt')?.dirty)) {
                   <small class="p-error mt-2">La fecha de fin es requerida.</small>
                 }
+                @if (form.hasError('dateRange') && (form.get('finishAt')?.touched || form.get('startAt')?.touched)) {
+                  <small class="p-error mt-2">La fecha de fin debe ser posterior a la fecha de inicio.</small>
+                }
               </div>
             </div>
           </div>

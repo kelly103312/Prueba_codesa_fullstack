@@ -40,7 +40,10 @@ export class TaskSection implements OnInit {
         this.tasks.set(res.data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron cargar las tareas' });
+      },
     });
   }
 
@@ -55,7 +58,7 @@ export class TaskSection implements OnInit {
         this.editingTask.set(res.data);
         this.showDialog.set(true);
       },
-      error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la tarea' }),
+      error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message || 'No se pudo cargar la tarea' }),
     });
   }
 
@@ -86,7 +89,7 @@ export class TaskSection implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Eliminada', detail: 'Tarea eliminada exitosamente' });
             this.loadTasks();
           },
-          error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la tarea' }),
+          error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: err.message || 'No se pudo eliminar la tarea' }),
         });
       },
     });
