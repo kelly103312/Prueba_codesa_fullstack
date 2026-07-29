@@ -51,7 +51,16 @@ export class ProjectForm implements OnInit {
       startAt: [today, Validators.required],
       finishAt: ['', Validators.required],
       assignedId: ['', Validators.required],
-    });
+    }, { validators: this.dateRangeValidator('startAt', 'finishAt') });
+  }
+
+  private dateRangeValidator(startCtrl: string, endCtrl: string) {
+    return (group: FormGroup) => {
+      const start = group.get(startCtrl)?.value;
+      const end = group.get(endCtrl)?.value;
+      if (!start || !end) return null;
+      return new Date(start) < new Date(end) ? null : { dateRange: true };
+    };
   }
 
   ngOnInit(): void {

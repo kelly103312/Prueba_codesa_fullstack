@@ -31,7 +31,7 @@
     <div class="flex gap-3">
       <div class="p-field flex flex-column flex-1">
         <label for="startAt" class="mb-2">Fecha de inicio</label>
-        <p-datepicker id="startAt" formControlName="startAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
+        <p-datepicker appendTo="body"  id="startAt" formControlName="startAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
         @if (form.get('startAt')?.invalid && (form.get('startAt')?.touched || form.get('startAt')?.dirty)) {
           <small class="p-error mt-2">La fecha de inicio es requerida.</small>
         }
@@ -39,9 +39,12 @@
 
       <div class="p-field flex flex-column flex-1">
         <label for="finishAt" class="mb-2">Fecha de fin</label>
-        <p-datepicker id="finishAt" formControlName="finishAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
+        <p-datepicker appendTo="body" id="finishAt" formControlName="finishAt" [fluid]="true" [showIcon]="true" iconDisplay="button" />
         @if (form.get('finishAt')?.invalid && (form.get('finishAt')?.touched || form.get('finishAt')?.dirty)) {
           <small class="p-error mt-2">La fecha de fin es requerida.</small>
+        }
+        @if (form.hasError('dateRange') && (form.get('finishAt')?.touched || form.get('startAt')?.touched)) {
+          <small class="p-error mt-2">La fecha de fin debe ser posterior a la fecha de inicio.</small>
         }
       </div>
     </div>
@@ -51,6 +54,12 @@
       <p-datepicker id="dueDate" formControlName="dueDate" [fluid]="true" [showIcon]="true" iconDisplay="button" />
       @if (form.get('dueDate')?.invalid && (form.get('dueDate')?.touched || form.get('dueDate')?.dirty)) {
         <small class="p-error mt-2">La fecha de vencimiento es requerida.</small>
+      }
+      @if (form.hasError('dueBeforeFinish') && (form.get('dueDate')?.touched || form.get('finishAt')?.touched)) {
+        <small class="p-error mt-2">La fecha de vencimiento debe ser posterior o igual a la fecha de fin.</small>
+      }
+      @if (form.hasError('dueBeforeStart') && (form.get('dueDate')?.touched || form.get('startAt')?.touched)) {
+        <small class="p-error mt-2">La fecha de vencimiento debe ser posterior a la fecha de inicio.</small>
       }
     </div>
   </div>
