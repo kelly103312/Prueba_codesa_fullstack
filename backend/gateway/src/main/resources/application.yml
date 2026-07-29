@@ -7,12 +7,18 @@ spring:
         cors-configurations:
           '[/**]':
             allowed-origins: "http://localhost:4200"
-            allowed-methods: "*"
+            allowed-methods: 
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
             allowed-headers: "*"
             allow-credentials: true
       routes:
         - id: user-service
-          uri: ${USER_SERVICE_URL:http://localhost:8000}
+          uri: ${USER_SERVICE_URL:http://localhost:8001}
           predicates:
             - Path=/api/auth/**,/api/users/**
           filters:
@@ -25,5 +31,31 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: user-service-docs
+          uri: http://user-service:8001
+          predicates:
+            - Path=/aggregate/user-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/user-service/v3/api-docs, /v3/api-docs
+ 
+        - id: project-service-docs
+          uri: http://project-service:8002
+          predicates:
+            - Path=/aggregate/project-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/project-service/v3/api-docs, /v3/api-docs
+            
+springdoc:
+  swagger-ui:
+    urls:
+      - name: User Service
+        url: /aggregate/user-service/v3/api-docs
+      - name: Project Service
+        url: /aggregate/project-service/v3/api-docs
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    
 server:
   port: ${SERVER_PORT:8080}

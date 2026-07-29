@@ -7,12 +7,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule, ToastModule],
+  imports: [ReactiveFormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule, ToastModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

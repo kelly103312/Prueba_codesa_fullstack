@@ -33,6 +33,7 @@ export class TaskService {
   }
 
   update(task: Task): Observable<ApiResponse<Task>> {
+    console.log('task:', task);
     return this.http.put<ApiResponse<Task>>(`${this.baseUrl}/task/update`, task);
   }
 

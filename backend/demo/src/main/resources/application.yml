@@ -15,17 +15,17 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
 server:
-  port: ${SERVER_PORT:8000}
+  port: ${SERVER_PORT:8001}
 
 app:
   cors:
@@ -34,3 +34,12 @@ app:
 jwt:
   secret: ${JWT_SECRET:mi-secret-clave-super-segura-para-demo-2026}
   expiration: ${JWT_EXPIRATION:3600000}
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method

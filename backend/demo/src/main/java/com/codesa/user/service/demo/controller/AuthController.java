@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticación", description = "Endpoints para inicio de sesión")
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -25,6 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario con email y contraseña como hash SHA-256 (no texto plano), devuelve un JWT")
     public ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody AuthenticatedRequestDto request) {
         log.info("Llegó petición a /auth/login - email: {}, password: {}", request.getEmail(), request.getPassword());
         AuthResponseDto response = authService.login(request);

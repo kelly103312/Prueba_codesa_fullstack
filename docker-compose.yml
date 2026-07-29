@@ -27,8 +27,6 @@ services:
       SERVER_PORT: 8001
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
-    ports:
-      - "8001:8001"
     networks:
       - app-network
 
@@ -44,8 +42,6 @@ services:
       SERVER_PORT: 8002
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
-    ports:
-      - "8002:8002"
     networks:
       - app-network
 
@@ -62,6 +58,15 @@ services:
       PROJECT_SERVICE_URL: http://project-service:8002
     ports:
       - "8080:8080"
+    networks:
+      - app-network
+  front:
+    build: ./management-projects/
+    depends_on:
+      gateway:
+        condition: service_started
+    ports:
+      - "4200:80"
     networks:
       - app-network
 

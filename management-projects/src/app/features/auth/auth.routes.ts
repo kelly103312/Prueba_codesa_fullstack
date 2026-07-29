@@ -7,6 +7,10 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () => import('./login/login').then((m) => m.Login)
   },
   {
+    path: 'register',
+    loadComponent: () => import('./register/register').then((m) => m.Register)
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./profile/profile').then((m) => m.Profile),
     canActivate: [authGuard],

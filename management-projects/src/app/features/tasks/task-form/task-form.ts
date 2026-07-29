@@ -76,7 +76,7 @@ export class TaskForm implements OnInit {
       projectId: this.projectId(),
       assignedName: selectedUser?.fullName ?? '',
     };
-
+    
     const request = this.isEditMode
       ? this.taskService.update({ ...payload, id: this.task()!.id })
       : this.taskService.create(payload);

@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { TokenService } from './token.service';
 import { HashService } from './hash.service';
-import { LoginRequest, LoginResponse, User } from '../models/auth';
+import { LoginRequest, LoginResponse, RegisterRequest, User } from '../models/auth';
 import { ApiResponse } from '../models/api-response';
 
 @Injectable({ providedIn: 'root' })
@@ -38,7 +38,6 @@ export class AuthService {
       }),
     );
   }
-
   logout(): void {
     this.tokenService.removeToken();
     this.user.set(null);

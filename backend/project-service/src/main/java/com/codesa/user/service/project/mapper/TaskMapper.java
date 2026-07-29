@@ -20,27 +20,25 @@ public interface TaskMapper {
     List<TaskListResponseDto> toListDto(List<TaskEntity> entities);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "status", defaultValue = "CREATED")
     TaskDto toDtoFromCreate(CreateTaskRequest request);
 
-    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "projectId", ignore = true)
     TaskDto toDtoFromUpdate(UpdateTaskRequest request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "status", defaultValue = "CREATED")
     TaskEntity toEntity(TaskDto dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "project", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "status", ignore = true)
     void updateEntity(TaskDto dto, @MappingTarget TaskEntity entity);
 }

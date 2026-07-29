@@ -19,6 +19,5 @@ public class AuthenticatedUser {
 
     private UUID id;
     private String name;
-    private String email;
     private Role role;
 }
