@@ -1,7 +1,11 @@
 package com.codesa.user.service.demo.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class AuthResponseDto {
+    @Schema(description = "Datos del usuario autenticado")
     private UserDto user;
+    @Schema(description = "Token JWT de acceso", example = "ey.........")
     private String token;
 
     public AuthResponseDto() {

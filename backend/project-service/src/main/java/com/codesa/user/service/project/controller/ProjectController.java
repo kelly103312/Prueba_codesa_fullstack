@@ -26,9 +26,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/project")
+@Tag(name = "Proyectos", description = "Gestión de proyectos CRUD")
 public class ProjectController {
     private final ProjectService projectService;
     private final ProjectMapper projectMapper;
@@ -39,6 +43,7 @@ public class ProjectController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "Crear proyecto", description = "Crea un nuevo proyecto asociado al usuario autenticado")
     public ResponseEntity<ApiResponse<ProjectDto>> createProject(
             @RequestBody CreateProjectRequest request,
             @AuthenticationPrincipal AuthenticatedUser user) {
@@ -50,6 +55,7 @@ public class ProjectController {
     }
 
     @PutMapping("/update")
+    @Operation(summary = "Actualizar proyecto", description = "Actualiza los datos de un proyecto existente")
     public ResponseEntity<ApiResponse<ProjectDto>> updateProject(@RequestBody UpdateProjectRequest request) {
         ProjectDto dto = projectMapper.toDtoFromUpdate(request);
         ApiResponse<ProjectDto> response = projectService.update(dto);
@@ -57,24 +63,30 @@ public class ProjectController {
     }
     
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar proyecto", description = "Elimina un proyecto existente por su ID")
+    @Parameter(description = "ID numérico del proyecto")
     public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Long id) {
         ApiResponse<Void> response = projectService.delete(id);
         return ResponseEntity.ok(response);
     }
     
     @PatchMapping("/status")
+    @Operation(summary = "Cambiar estado del proyecto", description = "Cambia el estado de un proyecto (ACTIVE/INACTIVE/COMPLETED)")
     public ResponseEntity<ApiResponse<ProjectDto>> changeProjectStatus(@RequestBody ChangeStatusRequest request) {
         ApiResponse<ProjectDto> response = projectService.changeStatus(request.getId(), request.getStatus());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/assigned")
+    @Operation(summary = "Proyectos asignados", description = "Obtiene los proyectos asignados al usuario autenticado")
     public ResponseEntity<ApiResponse<List<ProjectListResponseDto>>> getAssignedProjects(
             @AuthenticationPrincipal AuthenticatedUser user) {
         ApiResponse<List<ProjectListResponseDto>> response = projectService.getProjectsByAssignedId(user.getId(), user.getRole());
         return ResponseEntity.ok(response);
     }
     @GetMapping("/{id}")
+    @Parameter(description = "ID numérico del proyecto")
+    @Operation(summary = "Obtener proyecto por ID", description = "Busca un proyecto por su ID numérico")
     public ResponseEntity<ApiResponse<ProjectDto>> getProject(@PathVariable Long id) {
         ApiResponse<ProjectDto> response = projectService.getById(id);
         return ResponseEntity.ok(response);

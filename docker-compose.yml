@@ -27,8 +27,6 @@ services:
       SERVER_PORT: 8001
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
-    ports:
-      - "8001:8001"
     networks:
       - app-network
 
@@ -44,8 +42,6 @@ services:
       SERVER_PORT: 8002
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION: ${JWT_EXPIRATION}
-    ports:
-      - "8002:8002"
     networks:
       - app-network
 
